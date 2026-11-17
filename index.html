@@ -28,7 +28,7 @@ nav div a:not(.btn){color:#cfd0d2}nav div a:not(.btn):hover{color:#fff}
 nav .btn{padding:10px 18px}
 @media(max-width:820px){nav div a:not(.btn){display:none}}
 /* car */
-.car{width:100%;height:auto;display:block;--hl:.9;overflow:visible}
+.car{width:100%;height:auto;display:block;--hl:.9;overflow:visible}.fallback-wrap{width:100%}.fallback-wrap .car{width:100%;height:auto}
 .glow{opacity:var(--hl)}
 /* intro */
 #intro{position:fixed;inset:0;z-index:100;background:#000;display:grid;place-items:center;overflow:hidden}
@@ -208,7 +208,7 @@ sobre1:'[Edite: conte aqui a história da garagem.]',sobre2:'[Edite: descreva a 
 valores:[['Transparência','[Edite o valor]'],['Cuidado','[Edite o valor]'],['Confiança','[Edite o valor]']]};
 /* Dados de EXEMPLO. Campo img: URL de foto real (opcional). */
 const V=[
-{id:1,marca:'Porsche',modelo:'911 Carrera S',ano:2021,km:24000,motor:'3.0 Biturbo 450cv',cambio:'PDK 8 marchas',comb:'Gasolina',preco:889000,cat:'Esportivo',cor:'#aeb3b9',img:'https://v.wpimg.pl/YTM4ZjEudjUsVixZag57IG8OeAMsV3V2OBZgSGoWdmZ6A2gSdE1tbGJZdAswATY_OFguRDUZdiQiRikJLRB0bXwFdwkkBysxP1V3XjZYPDJ8VztZfRNoeidEPUg4'},
+{id:1,marca:'Porsche',modelo:'911 Carrera S',ano:2021,km:24000,motor:'3.0 Biturbo 450cv',cambio:'PDK 8 marchas',comb:'Gasolina',preco:889000,cat:'Esportivo',cor:'#aeb3b9',img:'https://pictures.dealer.com/p/porscheofftmyers/1234/b074c251b4c749058d4064ee32eef152.jpg'},
 {id:2,marca:'BMW',modelo:'M3 Competition',ano:2022,km:15000,motor:'3.0 L6 510cv',cambio:'Automático 8',comb:'Gasolina',preco:689000,cat:'Sedã',cor:'#1f3b6e',img:'https://gtspirit.com/wp-content/uploads/2021/03/2022-BMW-M3-Portimao-Blue-40-1536x1024.jpg'},
 {id:3,marca:'Mercedes-Benz',modelo:'AMG GLC 43',ano:2020,km:38000,motor:'3.0 V6 390cv',cambio:'Automático 9',comb:'Gasolina',preco:459000,cat:'SUV',cor:'#3b3e43',img:'https://media.mercedes-benz.at/Content/328083/f82fec11-9d4a-4350-9e2e-c947d50cabf4/1200/2400/.jpg'},
 {id:4,marca:'Audi',modelo:'RS5 Coupé',ano:2019,km:42000,motor:'2.9 V6 450cv',cambio:'Tiptronic 8',comb:'Gasolina',preco:519000,cat:'Esportivo',cor:'#7a1f1f',img:'https://images.cdn.autocar.co.uk/sites/autocar.co.uk/files/images/car-reviews/first-drives/legacy/audi-rs-5-2017-0437.jpg'},
@@ -218,7 +218,7 @@ const V=[
 let RM=matchMedia('(prefers-reduced-motion:reduce)').matches;const $=s=>document.querySelector(s);if(RM)document.documentElement.classList.add('rm');
 const brl=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
 const wa=t=>`https://wa.me/${C.whats}?text=${encodeURIComponent(t)}`;
-const car=(c,r,img)=>img?`<img class="car photo-car" src="${img}" alt="Foto demonstrativa de veículo" style="width:100%;display:block;object-fit:cover;aspect-ratio:${r?"2.25 / 1":"16 / 9"};border-radius:2px" loading="lazy" decoding="async">`:`<svg class="car" viewBox="-60 0 960 ${r?420:215}" aria-hidden="true" style="color:${c}"><use href="#car"/>${r?'<g mask="url(#fm)"><use href="#car" transform="translate(0,400) scale(1,-1)"/></g>':''}</svg>`;
+const car=(c,r,img)=>{const svg=`<svg class="car car-fallback" viewBox="-60 0 960 ${r?420:215}" aria-hidden="true" style="color:${c};${img?"display:none":""}"><use href="#car"/>${r?'<g mask="url(#fm)"><use href="#car" transform="translate(0,400) scale(1,-1)"/></g>':''}</svg>`;return img?`<img class="car photo-car" src="${img}" alt="Foto demonstrativa de veículo" style="width:100%;height:auto;max-height:${r?"min(48vh,430px)":"260px"};display:block;object-fit:contain;object-position:center;border-radius:2px;background:transparent" loading="eager" fetchpriority="high" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><div class="fallback-wrap">${svg}</div>`:svg};
 if(window.gsap&&window.ScrollTrigger){document.documentElement.classList.add('js');gsap.registerPlugin(ScrollTrigger)}
 const G=!!window.gsap&&!!window.ScrollTrigger;
 $('#yr').textContent=new Date().getFullYear();
