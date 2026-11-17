@@ -103,7 +103,16 @@ select{background:var(--g);color:var(--t);border:1px solid var(--l);padding:11px
 footer{padding:30px 0;text-align:center;color:var(--m);font-size:12px;border-top:1px solid var(--l)}
 dialog{background:var(--g);color:var(--t);border:1px solid var(--l);padding:34px;max-width:520px;width:calc(100% - 32px)}
 dialog::backdrop{background:#000c}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.js .rv{opacity:1;transform:none}.pan{display:none}.card figure .car{transition:none}}
+html.rm{scroll-behavior:auto}html.rm .rv,html.rm .h2.rv{opacity:1!important;transform:none!important}html.rm .w>span,html.rm .fv .im{transform:none!important;clip-path:none!important}html.rm .pan,html.rm .beam,html.rm .grid3d,html.rm .bigt{display:none}html.rm .carw{transform:translate(-50%,-42%)}
+.grid3d{position:absolute;left:-60%;right:-60%;bottom:-8%;height:62%;z-index:1;background:repeating-linear-gradient(90deg,#ffffff1c 0 1px,transparent 1px 90px),repeating-linear-gradient(0deg,#ffffff1c 0 1px,transparent 1px 90px);transform:perspective(520px) rotateX(70deg);transform-origin:50% 100%;-webkit-mask-image:linear-gradient(transparent,#000 75%);mask-image:linear-gradient(transparent,#000 75%)}
+.bigt{position:absolute;z-index:1;top:26%;left:2vw;white-space:nowrap;font:700 clamp(150px,28vw,440px)/1 var(--f1);color:transparent;-webkit-text-stroke:1px #ffffff1f;letter-spacing:.04em;pointer-events:none}
+.beam{position:absolute;left:84%;top:39%;width:70%;height:22%;transform:translateY(-50%);background:radial-gradient(ellipse at 0 50%,rgba(255,238,210,.65),rgba(255,200,140,.14) 45%,transparent 70%);filter:blur(10px);opacity:0;mix-blend-mode:screen;pointer-events:none;z-index:3}
+#icar{position:relative}
+.chip{position:fixed;z-index:60;left:16px;right:16px;max-width:420px;bottom:calc(16px + env(safe-area-inset-bottom,0px));background:#141516;color:#fff;border:1px solid var(--a);padding:14px 16px;font:500 13px/1.4 var(--f2);cursor:pointer;text-align:left}.chip[hidden]{display:none}
+.card{position:relative}.card::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .4s;background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),rgba(226,83,31,.16),transparent 60%)}.card:hover::after{opacity:1}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.06em}.w>span{display:inline-block;transform:translateY(108%);transition:transform 1.1s cubic-bezier(.2,.7,.2,1) calc(var(--i)*.07s)}.in .w>span{transform:none}
+.js .h2.rv{opacity:1;transform:none}
+.js .fv .im{clip-path:inset(0 0 0 100%);transition:clip-path 1.5s cubic-bezier(.2,.7,.2,1),opacity .9s}.js .fv.rev .im{clip-path:inset(0 100% 0 0)}.js .fv .im.in{clip-path:inset(-20% -20% -20% -20%)}
 </style>
 </head>
 <body>
@@ -139,7 +148,7 @@ dialog::backdrop{background:#000c}
 
 <main id="top">
 <section id="stage" aria-label="Apresentação">
-  <div class="bg b1"></div><div class="bg b2"></div><div class="bg b3"></div>
+  <div class="bg b1"></div><div class="bg b2"></div><div class="bg b3"></div><div class="bigt" id="bigt" aria-hidden="true">PROJETO CARRO</div><div class="grid3d" id="g3"></div>
   <div class="hero"><p class="eyebrow">Garagem especializada · Compra e venda</p>
     <h1>SUA PRÓXIMA CONQUISTA COMEÇA AQUI.</h1>
     <p class="s">Encontre o veículo ideal para acompanhar sua próxima história.</p>
@@ -187,6 +196,7 @@ dialog::backdrop{background:#000c}
 </main>
 <footer>© <span id="yr"></span> PROJETO CARRO. Todos os direitos reservados.</footer>
 
+<button class="chip" id="chip" type="button" hidden>Seu aparelho está com “reduzir movimento” ligado, então as animações estão desativadas. Toque aqui para ativar a experiência cinematográfica.</button>
 <dialog id="dlg"></dialog>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -198,22 +208,22 @@ sobre1:'[Edite: conte aqui a história da garagem.]',sobre2:'[Edite: descreva a 
 valores:[['Transparência','[Edite o valor]'],['Cuidado','[Edite o valor]'],['Confiança','[Edite o valor]']]};
 /* Dados de EXEMPLO. Campo img: URL de foto real (opcional). */
 const V=[
-{id:1,marca:'Porsche',modelo:'911 Carrera S',ano:2021,km:24000,motor:'3.0 Biturbo 450cv',cambio:'PDK 8 marchas',comb:'Gasolina',preco:889000,cat:'Esportivo',cor:'#aeb3b9'},
-{id:2,marca:'BMW',modelo:'M3 Competition',ano:2022,km:15000,motor:'3.0 L6 510cv',cambio:'Automático 8',comb:'Gasolina',preco:689000,cat:'Sedã',cor:'#1f3b6e'},
-{id:3,marca:'Mercedes-Benz',modelo:'AMG GLC 43',ano:2020,km:38000,motor:'3.0 V6 390cv',cambio:'Automático 9',comb:'Gasolina',preco:459000,cat:'SUV',cor:'#3b3e43'},
-{id:4,marca:'Audi',modelo:'RS5 Coupé',ano:2019,km:42000,motor:'2.9 V6 450cv',cambio:'Tiptronic 8',comb:'Gasolina',preco:519000,cat:'Esportivo',cor:'#7a1f1f'},
-{id:5,marca:'Volkswagen',modelo:'Golf GTI',ano:2023,km:9000,motor:'2.0 TSI 245cv',cambio:'DSG 7',comb:'Gasolina',preco:249000,cat:'Hatch',cor:'#a8281f'},
-{id:6,marca:'Toyota',modelo:'Corolla Cross',ano:2023,km:18000,motor:'2.0 Flex 177cv',cambio:'CVT',comb:'Flex',preco:169000,cat:'SUV',cor:'#d0d3d6'}];
+{id:1,marca:'Porsche',modelo:'911 Carrera S',ano:2021,km:24000,motor:'3.0 Biturbo 450cv',cambio:'PDK 8 marchas',comb:'Gasolina',preco:889000,cat:'Esportivo',cor:'#aeb3b9',img:'https://v.wpimg.pl/YTM4ZjEudjUsVixZag57IG8OeAMsV3V2OBZgSGoWdmZ6A2gSdE1tbGJZdAswATY_OFguRDUZdiQiRikJLRB0bXwFdwkkBysxP1V3XjZYPDJ8VztZfRNoeidEPUg4'},
+{id:2,marca:'BMW',modelo:'M3 Competition',ano:2022,km:15000,motor:'3.0 L6 510cv',cambio:'Automático 8',comb:'Gasolina',preco:689000,cat:'Sedã',cor:'#1f3b6e',img:'https://gtspirit.com/wp-content/uploads/2021/03/2022-BMW-M3-Portimao-Blue-40-1536x1024.jpg'},
+{id:3,marca:'Mercedes-Benz',modelo:'AMG GLC 43',ano:2020,km:38000,motor:'3.0 V6 390cv',cambio:'Automático 9',comb:'Gasolina',preco:459000,cat:'SUV',cor:'#3b3e43',img:'https://media.mercedes-benz.at/Content/328083/f82fec11-9d4a-4350-9e2e-c947d50cabf4/1200/2400/.jpg'},
+{id:4,marca:'Audi',modelo:'RS5 Coupé',ano:2019,km:42000,motor:'2.9 V6 450cv',cambio:'Tiptronic 8',comb:'Gasolina',preco:519000,cat:'Esportivo',cor:'#7a1f1f',img:'https://images.cdn.autocar.co.uk/sites/autocar.co.uk/files/images/car-reviews/first-drives/legacy/audi-rs-5-2017-0437.jpg'},
+{id:5,marca:'Volkswagen',modelo:'Golf GTI',ano:2023,km:9000,motor:'2.0 TSI 245cv',cambio:'DSG 7',comb:'Gasolina',preco:249000,cat:'Hatch',cor:'#a8281f',img:'https://assets.volkswagen.com/is/image/volkswagenag/_K8A1795_?Zml0PWNyb3AsMSZmbXQ9cG5nJndpZD04MDAmYWxpZ249MC4wMCwwLjAwJmJmYz1vZmYmYzRiMA=%3D'},
+{id:6,marca:'Toyota',modelo:'Corolla Cross',ano:2023,km:18000,motor:'2.0 Flex 177cv',cambio:'CVT',comb:'Flex',preco:169000,cat:'SUV',cor:'#d0d3d6',img:'https://media.vneconomy.vn/images/upload/2022/03/01/toyota-corolla-cross-automotor.jpg'}];
 /* ============================== */
-const $=s=>document.querySelector(s),RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let RM=matchMedia('(prefers-reduced-motion:reduce)').matches;const $=s=>document.querySelector(s);if(RM)document.documentElement.classList.add('rm');
 const brl=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
 const wa=t=>`https://wa.me/${C.whats}?text=${encodeURIComponent(t)}`;
-const car=(c,r,img)=>img?`<img src="${img}" alt="" style="width:100%;display:block" loading="lazy">`:`<svg class="car" viewBox="-60 0 960 ${r?420:215}" aria-hidden="true" style="color:${c}"><use href="#car"/>${r?'<g mask="url(#fm)"><use href="#car" transform="translate(0,400) scale(1,-1)"/></g>':''}</svg>`;
+const car=(c,r,img)=>img?`<img class="car photo-car" src="${img}" alt="Foto demonstrativa de veículo" style="width:100%;display:block;object-fit:cover;aspect-ratio:${r?"2.25 / 1":"16 / 9"};border-radius:2px" loading="lazy" decoding="async">`:`<svg class="car" viewBox="-60 0 960 ${r?420:215}" aria-hidden="true" style="color:${c}"><use href="#car"/>${r?'<g mask="url(#fm)"><use href="#car" transform="translate(0,400) scale(1,-1)"/></g>':''}</svg>`;
 if(window.gsap&&window.ScrollTrigger){document.documentElement.classList.add('js');gsap.registerPlugin(ScrollTrigger)}
 const G=!!window.gsap&&!!window.ScrollTrigger;
 $('#yr').textContent=new Date().getFullYear();
 document.querySelectorAll('[data-wa]').forEach(a=>{a.href=wa(a.dataset.wa);a.target='_blank';a.rel='noopener'});
-$('#carw').innerHTML=car('#b9bdc2',true);
+$('#carw').innerHTML=car('#b9bdc2',true,V[0].img)+'<div class="beam"></div>';
 /* catálogo */
 const opt=(a,l)=>`<option value="">${l}</option>`+a.map(x=>`<option value="${x}">${x}</option>`).join('');
 const uniq=k=>[...new Set(V.map(v=>v[k]))].sort();
@@ -225,7 +235,7 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.targ
 const watch=()=>document.querySelectorAll('.rv:not(.in)').forEach(e=>io.observe(e));
 function render(){
   const m=$('#fm').value,c=$('#fc').value,a=+$('#fa').value||0,p=$('#fp').value.split('-').map(Number);
-  const L=V.filter(v=>(!m||v.marca===m)&&(!c||v.cat===c)&&v.ano>=a&&(!p[0]&&p[0]!==0||isNaN(p[0])||(v.preco>=p[0]&&v.preco<=p[1])));
+  const L=V.filter(v=>(!m||v.marca===m)&&(!c||v.cat===c)&&v.ano>=a&&(!$('#fp').value||(v.preco>=p[0]&&v.preco<=p[1])));
   $('#cnt').textContent=L.length+(L.length===1?' veículo encontrado':' veículos encontrados');
   $('#grid').innerHTML=L.length?L.map((v,i)=>`<article class="card rv" style="--d:${(i%3)*.08}s"><figure><span class="tag">${v.cat}</span>${car(v.cor,false,v.img)}</figure><div class="cb"><small>${v.marca}</small><h3>${v.modelo}</h3>
   <dl class="sp"><div><dt>Ano</dt><dd>${v.ano}</dd></div><div><dt>Km</dt><dd>${v.km.toLocaleString('pt-BR')} km</dd></div><div><dt>Motor</dt><dd>${v.motor}</dd></div><div><dt>Câmbio</dt><dd>${v.cambio}</dd></div><div><dt>Combustível</dt><dd>${v.comb}</dd></div></dl>
@@ -247,8 +257,8 @@ $('#val').innerHTML=C.valores.map((v,i)=>`<div class="rv"><b>0${i+1}</b><div><h3
 $('#ct').innerHTML=[['Telefone',C.tel],['E-mail',C.email],['Endereço',C.endereco],['Instagram',C.instagram],['Horários',C.horarios]].map(x=>`<div><h3>${x[0].toUpperCase()}</h3><p>${x[1]}</p></div>`).join('');
 watch();
 /* scroll cinematográfico */
-if(G&&!RM){
-  const mob=innerWidth<720;
+function initScroll(){
+  if(!G)return;const mob=innerWidth<720;
   gsap.set('#carw',{xPercent:-50,yPercent:-42,transformPerspective:1400});
   const tl=gsap.timeline({defaults:{ease:'none'},scrollTrigger:{trigger:'#stage',start:'top top',end:mob?'+=220%':'+=320%',pin:true,scrub:.7,anticipatePin:1}});
   tl.to('.hero',{opacity:0,y:-60,duration:.5},0)
@@ -260,31 +270,39 @@ if(G&&!RM){
    .to('#p2',{opacity:1,duration:.3},1.7).to('#p2',{opacity:0,duration:.3},2.5)
    .to('#carw svg',{'--hl':1,duration:.6},1.2)
    .to('#carw',{yPercent:18,xPercent:-50,scale:.9,rotationY:mob?-3:-8,rotationX:6,duration:1},2)
-   .to('#p3',{opacity:1,duration:.3},2.6);
+   .to('#p3',{opacity:1,duration:.3},2.6)
+   .to('#bigt',{xPercent:-35,duration:3},0).to('#g3',{backgroundPositionY:'700px',duration:3},0)
+   .to('.carw .beam',{opacity:.9,duration:.6},.8).to('.carw .beam',{opacity:.35,duration:1},2);
+  if(!mob&&matchMedia('(hover:hover)').matches){const qx=gsap.quickTo('#carw .car','x',{duration:1,ease:'power3'}),qr=gsap.quickTo('#carw .car','rotationY',{duration:1.2,ease:'power3'});addEventListener('pointermove',e=>{const n=e.clientX/innerWidth-.5;qx(n*-50);qr(n*10)})}
   document.querySelectorAll('.fv').forEach(f=>{
     gsap.to(f.querySelector('.im'),{yPercent:-10,ease:'none',scrollTrigger:{trigger:f,scrub:true}});
     gsap.to(f.querySelector('.big'),{xPercent:f.classList.contains('rev')?10:-10,ease:'none',scrollTrigger:{trigger:f,scrub:true}});
   });
 }
+document.querySelectorAll('.h2').forEach(h=>{h.setAttribute('aria-label',h.textContent);h.innerHTML=h.textContent.split(' ').map((w,i)=>`<span class="w" aria-hidden="true" style="--i:${i}"><span>${w}</span></span>`).join(' ')});
+$('#grid').addEventListener('pointermove',e=>{const c=e.target.closest('.card');if(!c)return;const r=c.getBoundingClientRect();c.style.setProperty('--mx',e.clientX-r.left+'px');c.style.setProperty('--my',e.clientY-r.top+'px')});
 /* intro */
 const intro=$('#intro');
-function endIntro(){if(!intro.parentNode)return;intro.remove();document.body.style.overflow='';if(G)ScrollTrigger.refresh()}
-let seen=false;try{seen=sessionStorage.getItem('pc')==='1'}catch(e){}
-if(!G||RM||seen){endIntro()}else{
-  try{sessionStorage.setItem('pc','1')}catch(e){}
+function endIntro(){intro.style.display='none';document.body.style.overflow='';if(G)ScrollTrigger.refresh()}
+function runIntro(){
+  gsap.set(intro,{opacity:1,display:'grid'});scrollTo(0,0);
   document.body.style.overflow='hidden';
   $('#il').innerHTML='PROJETO CARRO'.split('').map(c=>c===' '?'<span>&nbsp;</span>':`<span><i>${c}</i></span>`).join('');
-  $('#icar').innerHTML=car('#b9bdc2',true);
+  $('#icar').innerHTML=car('#b9bdc2',true,V[0].img)+'<div class="beam"></div>';
   const sv='#icar svg';gsap.set(sv,{'--hl':0});gsap.set('#icar',{scale:.85});
   const t=gsap.timeline({onComplete:endIntro});
   t.to('.spk',{opacity:1,stagger:.2,duration:.8},.2)
    .fromTo('.sweep',{xPercent:-100,opacity:1},{xPercent:340,duration:1.2,ease:'power2.inOut'},.7)
    .from('.il i',{yPercent:110,opacity:0,stagger:.05,duration:.7,ease:'power3.out'},1.1)
    .to('#icar',{opacity:1,scale:1,duration:1.6,ease:'power2.out'},1.7)
-   .to(sv,{'--hl':1,duration:.12},3.1).to(sv,{'--hl':.25,duration:.1}).to(sv,{'--hl':1,duration:.5})
+   .to(sv,{'--hl':1,duration:.12},3.1).to('#icar .beam',{opacity:.9,duration:.7},3.1).to(sv,{'--hl':.25,duration:.1}).to(sv,{'--hl':1,duration:.5})
    .to('#icar',{scale:1.4,duration:1.3,ease:'power2.in'},3.7)
    .to(intro,{opacity:0,duration:.7},4.5);
   $('#skip').onclick=()=>{t.kill();gsap.to(intro,{opacity:0,duration:.35,onComplete:endIntro})};
+}
+if(G&&!RM){initScroll();runIntro()}else{
+  endIntro();if(!G)document.documentElement.classList.remove('js');
+  if(RM&&G){const ch=$('#chip');ch.hidden=false;ch.onclick=()=>{RM=false;document.documentElement.classList.remove('rm');ch.hidden=true;initScroll();runIntro()}}
 }
 </script>
 </body>
